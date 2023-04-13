@@ -6,7 +6,7 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 12:43:52 by ybourais          #+#    #+#             */
-/*   Updated: 2023/04/07 21:21:52 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/04/11 01:11:10 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,8 +101,6 @@ void philo_eating(int nbr, pthread_mutex_t mutex1)
 void philo_sleeping(int nbr, pthread_mutex_t mutex1)
 {
 	pthread_mutex_lock(&mutex1);
-	printf("philosopher %d has left the fork to his right\n", nbr);
-	printf("philosopher %d has left the fork to his left\n", nbr);
 	printf("philosopher %d is sleeping\n", nbr);
 	pthread_mutex_unlock(&mutex1);
 }
@@ -111,6 +109,12 @@ void philo_thinking(int nbr, pthread_mutex_t mutex1)
 {
 	pthread_mutex_lock(&mutex1);
 	printf("philosopher %d is sleeping\n", nbr);
+	pthread_mutex_unlock(&mutex1);
+}
+void philo_smooking(int nbr, pthread_mutex_t mutex1)
+{
+	pthread_mutex_lock(&mutex1);
+	printf("philosopher %d is smooking weed\n", nbr);
 	pthread_mutex_unlock(&mutex1);
 }
 
@@ -122,16 +126,16 @@ void *ft_action(void *arg)
 
 	while (1)
 	{
-		if (nbr == 1)
+		if (nbr == sleeping)
 			philo_sleeping(nbr, mutex1);
-		else if (nbr == 2)
+		else if (nbr == sleeping1)
 			philo_thinking(nbr, mutex1);
-		else if (nbr == 3)
+		else if (nbr == sleeping2)
 			philo_eating(nbr, mutex1);
 		else if (nbr == 4)
 			philo_thinking(nbr, mutex1);
 		else if (nbr == 5)
-			philo_eating(nbr, mutex1);
+			philo_smooking(nbr, mutex1);
 		sleep(1);
 	}
 	free(arg);
