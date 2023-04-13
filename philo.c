@@ -6,7 +6,7 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 12:43:52 by ybourais          #+#    #+#             */
-/*   Updated: 2023/04/11 01:11:10 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/04/13 02:06:58 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@
 
 // number_of_philosophers time_to_die time_to_eat time_to_sleep  %% [number_of_times_each_philosopher_must_eat]
 // nbr_philo time_d time_e time_s nbr_eting
+//
 
 int ft_len(char *str)
 {
