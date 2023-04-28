@@ -1,7 +1,7 @@
 
 NAME = philo
 
-SRCS = philo.c parsing.c \
+SRCS = philo.c parsing.c utils.c\
 
 CC = cc
 

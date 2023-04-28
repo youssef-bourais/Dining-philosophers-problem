@@ -6,120 +6,50 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 12:43:52 by ybourais          #+#    #+#             */
-/*   Updated: 2023/04/13 02:06:58 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/04/28 16:46:53 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include <stdio.h>
 # include "philo.h"
-# include <time.h>
-# include <limits.h>
 
-// number_of_philosophers time_to_die time_to_eat time_to_sleep  %% [number_of_times_each_philosopher_must_eat]
-// nbr_philo time_d time_e time_s nbr_eting
-//
-
-int ft_len(char *str)
+void philo_take_forks(int nbr, pthread_mutex_t mutex)
 {
-	int i = 0;
-	if (!str)
-		return 0;
-	while (str[i] != '\0')
-		i ++;
-	return i;	
-}
-
-long	a_toi(char *str, int *handler)
-{
-	int	i;
-	long	res;
-
-	i = 0;
-	res = 0;
-	while ((str[i] >= 9 && str[i] <= 13) || str[i] == ' ')
-		i++;
-	if (str[i] == '+')
-		i++;
-	else if (!(str[i] >= '0' && str[i] <= '9'))
-		*handler = 0;
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		*handler = 1;	
-		res = res * 10 + str[i] - '0';
-		i++;
-	}
-	if (str[i] != '\0' || res >= INT_MAX)
-		*handler = 0;
-	return (res);
-}
-
-int ft_error()
-{
-	write(2, "Error\n", 6);
-	return 1;
-}
-
-void free_table(char **table, int size)
-{
-	int i = 0;
-	while (i < size)
-	{
-		free(table[i]);
-		i ++;
-	}
-	free(table);
-}
-
-int _nbr(int argc, char *argv[])
-{
-	int i = 0;
-	int counter = 0;
-	int h;
-	while (i < argc - 1)
-	{
-		char **temp = ft_split(argv[i + 1]);
-		h = 0;
-		while (temp[h] != NULL)
-		{
-			counter ++;
-			h++;
-		}
-		free_table(temp, h);
-		i++;
-	}
-	return counter;
-}
-
-void philo_eating(int nbr, pthread_mutex_t mutex1)
-{
-	pthread_mutex_lock(&mutex1);
+	pthread_mutex_lock(&mutex);
 	printf("philosopher %d has take the fork to his right\n", nbr);
 	printf("philosopher %d has take the fork to his left\n", nbr);
+	pthread_mutex_unlock(&mutex);
+}
+ 
+void philo_put_forks(int nbr, pthread_mutex_t mutex)
+{
+	pthread_mutex_lock(&mutex);
+	printf("philosopher %d has put the fork to his right\n", nbr);
+	printf("philosopher %d has put the fork to his left\n", nbr);
+	pthread_mutex_unlock(&mutex);
+}
+
+void philo_eating(int nbr, pthread_mutex_t mutex)
+{
+	pthread_mutex_lock(&mutex);
 	printf("philosopher %d is eating\n", nbr);
-	pthread_mutex_unlock(&mutex1);
+	pthread_mutex_unlock(&mutex);
 }
 
-void philo_sleeping(int nbr, pthread_mutex_t mutex1)
+void philo_sleeping(int nbr, pthread_mutex_t mutex)
 {
-	pthread_mutex_lock(&mutex1);
+	pthread_mutex_lock(&mutex);
 	printf("philosopher %d is sleeping\n", nbr);
-	pthread_mutex_unlock(&mutex1);
+	pthread_mutex_unlock(&mutex);
 }
 
-void philo_thinking(int nbr, pthread_mutex_t mutex1)
+void philo_thinking(int nbr, pthread_mutex_t mutex)
 {
-	pthread_mutex_lock(&mutex1);
-	printf("philosopher %d is sleeping\n", nbr);
-	pthread_mutex_unlock(&mutex1);
-}
-void philo_smooking(int nbr, pthread_mutex_t mutex1)
-{
-	pthread_mutex_lock(&mutex1);
-	printf("philosopher %d is smooking weed\n", nbr);
-	pthread_mutex_unlock(&mutex1);
+	pthread_mutex_lock(&mutex);
+	printf("philosopher %d is thinking\n", nbr);
+	pthread_mutex_unlock(&mutex);
 }
 
-pthread_mutex_t mutex1;
+pthread_mutex_t mutex;
 
 void *ft_action(void *arg)
 {
@@ -127,16 +57,30 @@ void *ft_action(void *arg)
 
 	while (1)
 	{
-		if (nbr == sleeping)
-			philo_sleeping(nbr, mutex1);
-		else if (nbr == sleeping1)
-			philo_thinking(nbr, mutex1);
-		else if (nbr == sleeping2)
-			philo_eating(nbr, mutex1);
-		else if (nbr == 4)
-			philo_thinking(nbr, mutex1);
-		else if (nbr == 5)
-			philo_smooking(nbr, mutex1);
+		// if (nbr == 1)
+		// {
+		// 	pthread_mutex_lock(&mutex);
+		// 	printf("philosopher %d is thinking\n", nbr);
+		// 	pthread_mutex_unlock(&mutex);
+		// }
+		// else if (nbr == 2)
+		// {
+		// 	pthread_mutex_lock(&mutex);
+		// 	printf("philosopher %d is sleeping\n", nbr);
+		// 	pthread_mutex_unlock(&mutex);
+		// }
+		// else if (nbr == 3)
+		// {
+		// 	pthread_mutex_lock(&mutex);
+		// 	printf("philosopher %d is etating\n", nbr);
+		// 	pthread_mutex_unlock(&mutex);
+		// }
+		// else if (nbr == 4)
+		// {
+			pthread_mutex_lock(&mutex);
+			printf("philosopher %d is thinking\n", nbr);
+			pthread_mutex_unlock(&mutex);
+		// }
 		sleep(1);
 	}
 	free(arg);
@@ -146,7 +90,7 @@ void *ft_action(void *arg)
 int creat_phiolosofers(int nbr)
 {
 	pthread_t philo[nbr];
-	pthread_mutex_init(&mutex1, NULL);
+	pthread_mutex_init(&mutex, NULL);
 
 	int *nb;
 	int i = 1;
@@ -167,61 +111,80 @@ int creat_phiolosofers(int nbr)
 			return 1;
 		i++;
 	}
-	printf("finish\n");
-	pthread_mutex_destroy(&mutex1);
+	pthread_mutex_destroy(&mutex);
 	return  0;
 }
 
-int parameters(int *info, int nbr)
+t_philo get_data(int *info, int nbr)
 {
-	int e;
-	int number_of_philosophers = info[0];
-	// int time_to_die = info[1];
-	// int time_to_eat = info[2];
-	// int time_to_sleep = info[3];
-	int number_of_times_each_philosopher_must_eat;
+	t_philo param;
+	param.number_of_philosophers = info[0];
+	param.time_to_die = info[1];
+	param.time_to_eat = info[2];
+	param.time_to_sleep = info[3];
 	if (nbr == 5)
-		number_of_times_each_philosopher_must_eat = info[4];
-	e = creat_phiolosofers(number_of_philosophers);
-	return e;
+		param.number_of_times_each_philosopher_must_eat = info[4];
+	return param;
+}
+
+t_beta fill_data(t_param *param, int argc, char **argv)
+{
+	t_beta info = {0, 0};
+	
+	info.arr = malloc(sizeof(int) * _nbr(argc, argv));
+	if (argc > 1 && (_nbr(argc, argv) == 4 || _nbr(argc, argv) == 5)) // cheak num of args
+	{
+		while (param->i < argc - 1)
+		{
+			param->temp = ft_split(argv[param->i + 1]); // fill the table
+			param->k = 0;
+			while (param->temp[param->k] != NULL)
+			{
+				if ((!a_toi(param->temp[param->k], &(param->h)) || a_toi(param->temp[param->k], &(param->h))) && param->h == 1)
+					info.arr[param->j++] = a_toi(param->temp[param->k], &(param->h)); // fill the array
+				else
+					info.e = 1;
+				param->k++;
+			}
+			free_table(param->temp, param->k);
+			param->i++;
+		}
+	}
+	else
+		info.e = 1;
+	return info;
 }
 
 int main(int argc, char *argv[])
 {
-	int i = 0;
-	int j = 0;
-	int k = 0;
-	int h;
-	int e = 0;
-	char **temp;
-	int info[_nbr(argc, argv)];
+	t_param	param = {0, 0, 0, 0, 0, 0};
+	t_beta beta;
+	t_philo ph;
+	int p;
 
-	if (argc > 1 && (_nbr(argc, argv) == 4 || _nbr(argc, argv) == 5))
-	{
-		while (i < argc - 1)
-		{
-			temp = ft_split(argv[i + 1]);
-			k = 0;
-			while (temp[k] != NULL)
-			{
-				if ((!a_toi(temp[k], &h) || a_toi(temp[k], &h)) && h == 1)
-					info[j++] = a_toi(temp[k], &h);
-				else
-				{
-					ft_error();
-					return 1;
-				}
-				k++;
-			}
-			free_table(temp, k);
-			i++;
-		}
-		e = parameters(info, j);
-	}
-	else if(!(argc > 1 && (_nbr(argc, argv) == 4 || _nbr(argc, argv) == 5)) || e != 1)
+	beta = fill_data(&param, argc, argv);
+	ph = get_data(beta.arr, param.j);
+	free(beta.arr);
+	if (param.e == 1 || beta.e == 1)
 	{
 		ft_error();
-		return 1;	
+		return 1;
 	}
+	p = creat_phiolosofers(ph.number_of_philosophers);
+	if (p == 1)
+	{
+		ft_error();
+		return 1;
+	}
+	// struct timeval start, end;
+	// int i = 0;
+	
+	// gettimeofday(&start, 0);
+
+	// while (i < 1e5)
+	// 	i++;
+
+	// gettimeofday(&end, 0);
+	// printf("%d\n", end.tv_usec - start.tv_usec);
 	return 0;
 }
