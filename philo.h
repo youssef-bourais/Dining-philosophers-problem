@@ -6,7 +6,7 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 17:03:27 by ybourais          #+#    #+#             */
-/*   Updated: 2023/04/28 16:31:22 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/04/29 16:48:11 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 #include <sys/time.h>
 # include <limits.h>
 
-
+// pthread_mutex_t mutex;
 
 typedef struct s_vars
 {
@@ -46,6 +46,12 @@ typedef struct s_beta
 	int e;
 	int *arr;
 }	t_beta;
+
+typedef struct s_info
+{
+	int id;
+	pthread_mutex_t *fork;
+}	t_data;
 
 int nbr_word(char *str);
 void *ft_copy(char *dst, char *src, int size);

@@ -6,48 +6,11 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 12:43:52 by ybourais          #+#    #+#             */
-/*   Updated: 2023/04/28 16:46:53 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/04/29 16:50:16 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 # include "philo.h"
-
-void philo_take_forks(int nbr, pthread_mutex_t mutex)
-{
-	pthread_mutex_lock(&mutex);
-	printf("philosopher %d has take the fork to his right\n", nbr);
-	printf("philosopher %d has take the fork to his left\n", nbr);
-	pthread_mutex_unlock(&mutex);
-}
- 
-void philo_put_forks(int nbr, pthread_mutex_t mutex)
-{
-	pthread_mutex_lock(&mutex);
-	printf("philosopher %d has put the fork to his right\n", nbr);
-	printf("philosopher %d has put the fork to his left\n", nbr);
-	pthread_mutex_unlock(&mutex);
-}
-
-void philo_eating(int nbr, pthread_mutex_t mutex)
-{
-	pthread_mutex_lock(&mutex);
-	printf("philosopher %d is eating\n", nbr);
-	pthread_mutex_unlock(&mutex);
-}
-
-void philo_sleeping(int nbr, pthread_mutex_t mutex)
-{
-	pthread_mutex_lock(&mutex);
-	printf("philosopher %d is sleeping\n", nbr);
-	pthread_mutex_unlock(&mutex);
-}
-
-void philo_thinking(int nbr, pthread_mutex_t mutex)
-{
-	pthread_mutex_lock(&mutex);
-	printf("philosopher %d is thinking\n", nbr);
-	pthread_mutex_unlock(&mutex);
-}
 
 pthread_mutex_t mutex;
 
@@ -55,32 +18,12 @@ void *ft_action(void *arg)
 {
 	int nbr = *(int *)arg;
 
+	// sleep(1);
 	while (1)
 	{
-		// if (nbr == 1)
-		// {
-		// 	pthread_mutex_lock(&mutex);
-		// 	printf("philosopher %d is thinking\n", nbr);
-		// 	pthread_mutex_unlock(&mutex);
-		// }
-		// else if (nbr == 2)
-		// {
-		// 	pthread_mutex_lock(&mutex);
-		// 	printf("philosopher %d is sleeping\n", nbr);
-		// 	pthread_mutex_unlock(&mutex);
-		// }
-		// else if (nbr == 3)
-		// {
-		// 	pthread_mutex_lock(&mutex);
-		// 	printf("philosopher %d is etating\n", nbr);
-		// 	pthread_mutex_unlock(&mutex);
-		// }
-		// else if (nbr == 4)
-		// {
-			pthread_mutex_lock(&mutex);
-			printf("philosopher %d is thinking\n", nbr);
-			pthread_mutex_unlock(&mutex);
-		// }
+		pthread_mutex_lock(&mutex);
+		printf("philosopher %d is thinking\n", nbr);
+		pthread_mutex_unlock(&mutex);
 		sleep(1);
 	}
 	free(arg);
@@ -93,19 +36,18 @@ int creat_phiolosofers(int nbr)
 	pthread_mutex_init(&mutex, NULL);
 
 	int *nb;
-	int i = 1;
+	int i = 0;
 
-	while (i <= nbr)
+	while (i < nbr)
 	{
 		nb = (int *)malloc(sizeof(int));
-		*nb = i;
-		if(pthread_create(&philo[i], NULL, ft_action, nb))
+		*nb = i + 1;
+		if(pthread_create(&philo[i], NULL, &ft_action, nb))
 			return 1;
-		sleep(1);
 		i++;
 	}
-	i = 1;
-	while (i <= nbr)
+	i = 0;
+	while (i < nbr)
 	{		
 		if (pthread_join(philo[i], NULL))
 			return 1;
