@@ -6,7 +6,7 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 17:03:27 by ybourais          #+#    #+#             */
-/*   Updated: 2023/04/30 10:56:10 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/04/30 17:17:48 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 #include <pthread.h>
 #include <sys/time.h>
 # include <limits.h>
-
+typedef struct philosofers s_philo;
 typedef struct indices
 {
 	int i;
@@ -37,6 +37,8 @@ typedef struct argument
 	int time_to_eat;
 	int time_to_sleep;
 	int number_of_times_each_philosopher_must_eat;
+	s_philo *philo;
+	pthread_mutex_t *forks;
 }	t_argument;
 
 typedef struct info
@@ -48,7 +50,9 @@ typedef struct info
 typedef struct philosofers
 {
 	int philo_id;
-	pthread_mutex_t fork;
+	int forks_l;
+	int forks_r;
+	t_argument data;
 }	s_philo;
 
 int nbr_word(char *str);
