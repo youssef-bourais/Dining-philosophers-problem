@@ -26,7 +26,7 @@ void *ft_action(void *arg)
 			// pthread_mutex_lock(&philosofers->data.forks);
 			// printf("philosopher %d take right fork\n", philosofers->philo_id);
 
-			printf("philosopher %d is etating\n", philosofers->data.philo->philo_id);
+			printf("philosopher %d is etating\n", philosofers->philo_id);
 
 			// pthread_mutex_unlock(&philosofers->data.forks);
 			// printf("philosopher %d put left fork\n", philosofers->philo_id);
@@ -45,25 +45,25 @@ void *ft_action(void *arg)
 	return NULL;
 }
 
-void init_philo(t_argument *ptr)
-{
-	int i = 0;
-	ptr->philo = malloc(sizeof(s_philo) * ptr->number_of_philosophers);
+// void init_philo(t_argument *ptr)
+// {
+// 	int i = 0;
+// 	ptr->philo = malloc(sizeof(s_philo) * ptr->number_of_philosophers);
 
-	while (i < ptr->number_of_philosophers)
-	{
-		ptr->philo[i].philo_id = i + 1;
-		ptr->philo[i].forks_l = i;
-		ptr->philo[i].forks_r = i + 1;
-		i++;
-	}
-	ptr->forks = malloc(sizeof(pthread_mutex_t) * ptr->number_of_philosophers);
-	i = 0;
-	while (i < ptr->number_of_philosophers)
-	{
-		pthread_mutex_init(&ptr->forks[i++], NULL);
-	}
-}
+// 	while (i < ptr->number_of_philosophers)
+// 	{
+// 		ptr->philo[i].philo_id = i + 1;
+// 		ptr->philo[i].forks_l = i;
+// 		ptr->philo[i].forks_r = i + 1;
+// 		i++;
+// 	}
+// 	ptr->forks = malloc(sizeof(pthread_mutex_t) * ptr->number_of_philosophers);
+// 	i = 0;
+// 	while (i < ptr->number_of_philosophers)
+// 	{
+// 		pthread_mutex_init(&ptr->forks[i++], NULL);
+// 	}
+// }
 
 int creat_phiolosofers(int nbr)
 {
@@ -73,9 +73,9 @@ int creat_phiolosofers(int nbr)
 	philosofers = malloc(nbr * sizeof(s_philo));
 
 	int i = 0;
-	// while (i < nbr)
-	// 	pthread_mutex_init(&philosofers[i++].forks, NULL);
-	init_philo(&philosofers->data);
+	while (i < nbr)
+		pthread_mutex_init(&philosofers[i++].forks, NULL);
+	// init_philo(&philosofers->data);
 
 	i = 0;
 	while (i < nbr)
@@ -85,7 +85,6 @@ int creat_phiolosofers(int nbr)
 			return 1;
 		i++;
 	}
-	// exit(0);
 	i = 0;
 	while (i < nbr)
 	{		
@@ -93,9 +92,9 @@ int creat_phiolosofers(int nbr)
 			return 1;
 		i++;
 	}
-	// i = 0;
-	// while (i < nbr)
-	// 	pthread_mutex_destroy(&philosofers[i++].forks);
+	i = 0;
+	while (i < nbr)
+		pthread_mutex_destroy(&philosofers[i++].forks);
 	free(philosofers);
 	return  0;
 }
