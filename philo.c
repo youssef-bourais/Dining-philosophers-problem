@@ -21,96 +21,88 @@
 void *ft_action(void *arg)
 {
 	s_philo *philosofers = (s_philo *)arg;
-	// (void) philosofers;
 
-	// printf("%d\n",philosofers->left_fork);
-	// while (1)
-	// {
-		// if (philosofers->philo_id[philosofers->indice] % 2 != 0)
-		// {
-			pthread_mutex_lock(&philosofers->data->forks[philosofers->left_fork]);
-			pthread_mutex_lock(&philosofers->data->forks[philosofers->right_fork]);
-			printf("philosopher %d pick the forks\n", philosofers->philo_id);
+	while (1)
+	{
+		if (philosofers->philo_id)
+		{
+			// pthread_mutex_lock(&philosofers);
+			// pthread_mutex_lock(&);
+			// printf("philosopher %d pick the forks\n", philosofers->philo_id);
 
-			exit(0);
-			// printf("philosopher %d is etating\n", philosofers->philo_id);
+			printf("philosopher %d is etating\n", philosofers->philo_id);
 			// usleep(philosofers->data.time_to_eat);
 
 			// printf("philosopher %d put the forks\n", philosofers->philo_id);
 			// pthread_mutex_unlock(&philosofers->data->forks[philosofers->left_fork]);
 			// pthread_mutex_unlock(&philosofers->data->forks[philosofers->right_fork]);
-			// exit(0);
-		// }
-		// else
-		// {
-		// 	pthread_mutex_lock(&philosofers->data.for_printing);
-		// 	printf("hahahah\n");
-		// 	pthread_mutex_unlock(&philosofers->data.for_printing);
-		// }
+		}
+	// 	else
+	// 	{
+	// 		pthread_mutex_lock(&philosofers->data.for_printing);
+	// 		printf("hahahah\n");
+	// 		pthread_mutex_unlock(&philosofers->data.for_printing);
+	// 	}
 		sleep(1);
-	// }
+	}
 	return NULL;
 }
 
-s_philo *init_philo(t_argument *data)
+s_philo *init_philo(s_philo *philo, t_argument *philo_info)
 {
-	static int i = 0;
-	s_philo *test;
+	int i = 0;
 
-	data->philo = malloc(data->number_of_philosophers * sizeof(s_philo));
 	i = 0;
-	while (i < data->number_of_philosophers)
+	while (i < philo_info->number_of_philosophers)
 	{
-		data->philo[i].philo_id = i;
-		data->philo[i].left_fork = i;
-		data->philo[i].right_fork = (i + 1) % data->number_of_philosophers;
-		// data.philo[i].indice = i;
+		philo[i].philo_id = i;
+		philo[i].left_fork = i;
+		philo[i].right_fork = (i + 1) % philo_info->number_of_philosophers;
 		i++;
 	}
-	data->forks = malloc(sizeof(pthread_mutex_t) * data->number_of_philosophers);
+	philo_info->forks = malloc(sizeof(pthread_mutex_t) * philo_info->number_of_philosophers);
+
 	i = 0;
-	pthread_mutex_init(&data->for_printing, NULL);
-	while (i < data->number_of_philosophers)
-	{
-		pthread_mutex_init(&data->forks[i++], NULL);
-	}
-	test = data->philo;
-	return test;
+	while (i < philo_info->number_of_philosophers)
+		pthread_mutex_init(&philo_info->forks[i++], NULL);
+
+	return philo; 
 }
 
-int creat_phiolosofers(t_argument *data)
+int creat_phiolosofers(t_argument *philo_info)
 {
+	philo_info->philo_init = malloc(sizeof(pthread_t) * philo_info->number_of_philosophers);
 	s_philo *philosofers;
 
-
-	// philosofers->data = malloc(sizeof(t_argument));
-	data->philo_init = malloc(data->number_of_philosophers * sizeof(pthread_t));
-
-	philosofers = init_philo(data);
 	int i;
 
-	i = 0;
-	while (i < data->number_of_philosophers)
-	{
-		if(pthread_create(&data->philo_init[i], NULL, &ft_action, &philosofers[i]))
-			return 1;
-		i++;
-	}
-	i = 0;
-	while (i < data->number_of_philosophers)
-	{
-		if (pthread_join(philosofers->data->philo_init[i], NULL))
-			return 1;
-		i++;
-	}
-	i = 0;
-	// pthread_mutex_destroy(&philosofers->data->for_printing);
-	while (i < data->number_of_philosophers)
-		pthread_mutex_destroy(&philosofers->data->forks[i++]);
+	philosofers = malloc(sizeof(s_philo) * philo_info->number_of_philosophers);
 
-	// free(philosofers);
-	// free(philosofers->philo_id);
-	// free(philosofers->data->philo_init);
+	philosofers = init_philo(philosofers, philo_info);
+	
+	i = 0;
+	while (i < philo_info->number_of_philosophers)
+	{
+		if(pthread_create(&philo_info->philo_init[i], NULL, &ft_action, &philosofers[i]))
+			return 1;
+		i++;
+	}
+	while(1);
+	i = 0;
+	while (i < philo_info->number_of_philosophers)
+	{
+		if (pthread_join(philo_info->philo_init[i], NULL))
+			return 1;
+		i++;
+	}
+
+	i = 0;
+	while (i < philo_info->number_of_philosophers)
+		pthread_mutex_destroy(&philo_info->forks[i++]);
+
+	free(philo_info->philo_init);
+	free(philosofers);
+	free(philo_info->forks);
 	return  0;
 }
 
