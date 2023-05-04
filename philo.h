@@ -6,7 +6,7 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 17:03:27 by ybourais          #+#    #+#             */
-/*   Updated: 2023/05/03 17:18:56 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/05/04 20:16:38 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,6 +49,7 @@ typedef struct argument
 
 	pthread_mutex_t *forks;
 	pthread_mutex_t for_printing;
+	pthread_mutex_t for_eating;
 	pthread_t *philo_init;
 }	t_argument;
 
@@ -57,6 +58,7 @@ typedef struct philosofers
 	int philo_id;
 	int left_fork;
 	int right_fork;
+	int flage_of_eating;
 	t_argument bridg;
 }	s_philo;
 
