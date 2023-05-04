@@ -6,7 +6,7 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 17:03:27 by ybourais          #+#    #+#             */
-/*   Updated: 2023/05/03 12:54:51 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/05/03 17:18:56 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,7 @@ typedef struct info
 	int *arr;
 }	s_info;
 
-typedef struct philosofers
-{
-	int philo_id;
-	int left_fork;
-	int right_fork;
-	// t_argument mutex;
-}	s_philo;
+typedef struct argument t_argument;
 
 typedef struct argument
 {
@@ -53,10 +47,18 @@ typedef struct argument
 	int time_to_sleep;
 	int number_of_times_each_philosopher_must_eat;
 
-	// pthread_mutex_t for_printing;
 	pthread_mutex_t *forks;
+	pthread_mutex_t for_printing;
 	pthread_t *philo_init;
 }	t_argument;
+
+typedef struct philosofers
+{
+	int philo_id;
+	int left_fork;
+	int right_fork;
+	t_argument bridg;
+}	s_philo;
 
 int nbr_word(char *str);
 void *ft_copy(char *dst, char *src, int size);
