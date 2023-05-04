@@ -53,7 +53,7 @@ void *ft_action(void *arg)
 
 			// usleep(philosofers->bridg.time_to_sleep);
 		}
-		sleep(1);
+		usleep(500000);
 	}
 	return NULL;
 }
