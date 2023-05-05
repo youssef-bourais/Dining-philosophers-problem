@@ -6,7 +6,7 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 12:43:52 by ybourais          #+#    #+#             */
-/*   Updated: 2023/05/04 20:16:53 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/05/05 20:17:41 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,37 +19,33 @@
 // ◦ timestamp_in_ms X died
 
 void eating(s_philo *philosofers)
-{
-	pthread_mutex_lock(&philosofers->bridg.for_printing);
-	
-	pthread_mutex_lock(&philosofers->bridg.forks[philosofers->left_fork]);
-	pthread_mutex_lock(&philosofers->bridg.forks[philosofers->right_fork]);
+{	
+	pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->left_fork]));
+	pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->right_fork]));
 
-	pthread_mutex_lock(&philosofers->bridg.for_printing);
+	// pthread_mutex_lock(&philosofers->bridg.for_printing);
 	printf("philosopher %d is etating with {%d, %d}\n", philosofers->philo_id, philosofers->left_fork, philosofers->right_fork);
-	pthread_mutex_unlock(&philosofers->bridg.for_printing);
+	// pthread_mutex_unlock(&philosofers->bridg.for_printing);
 
-	usleep(philosofers->bridg.time_to_eat);
+	// usleep(philosofers->bridg.time_to_eat);
 
-	pthread_mutex_unlock(&philosofers->bridg.forks[philosofers->right_fork]);
-	pthread_mutex_unlock(&philosofers->bridg.forks[philosofers->left_fork]);
-	
-	pthread_mutex_unlock(&philosofers->bridg.for_printing);
+	pthread_mutex_unlock(&(philosofers->bridg.forks[philosofers->right_fork]));
+	pthread_mutex_unlock(&(philosofers->bridg.forks[philosofers->left_fork]));
 }
 
-void sleeping(s_philo *philosofers)
-{
-	pthread_mutex_lock(&philosofers->bridg.for_printing);
-	printf("philosopher %d is sleeping\n", philosofers->philo_id);
-	pthread_mutex_unlock(&philosofers->bridg.for_printing);
-	usleep(philosofers->bridg.time_to_sleep);
-}
+// void sleeping(s_philo *philosofers)
+// {
+// 	pthread_mutex_lock(&philosofers->bridg.for_printing);
+// 	printf("philosopher %d is sleeping\n", philosofers->philo_id);
+// 	pthread_mutex_unlock(&philosofers->bridg.for_printing);
+// 	usleep(philosofers->bridg.time_to_sleep);
+// }
 
 void thinking(s_philo *philosofers)
 {
-	pthread_mutex_lock(&philosofers->bridg.for_printing);
+	// pthread_mutex_lock(&(philosofers->bridg.for_printing));
 	printf("philosopher %d is thinking\n", philosofers->philo_id);
-	pthread_mutex_unlock(&philosofers->bridg.for_printing);
+	// pthread_mutex_unlock(&(philosofers->bridg.for_printing));
 }
 
 void *ft_action(void *arg)
@@ -70,11 +66,6 @@ void *ft_action(void *arg)
             eating(philosofers);
         else
             thinking(philosofers);
-		// if (i == philosofers->bridg.number_of_philosophers - 1)
-		// {
-		// 	i = 0;
-		// }
-		// printf("%d %d\n", i, philosofers->bridg.number_of_philosophers - 1);
         sleep(1);
         i++;
     }
@@ -83,77 +74,71 @@ void *ft_action(void *arg)
 
 s_philo *init_philo(s_philo *philo, t_argument *philo_info)
 {
-	int i = 0;
+	int i;
+
+	philo_info->forks = malloc(sizeof(pthread_mutex_t) * philo_info->number_of_philosophers);
 
 	i = 0;
 	while (i < philo_info->number_of_philosophers)
 	{
-		philo[i].bridg.forks = malloc(sizeof(pthread_mutex_t));
-		// philo[i].flage_of_eating = 0;
 		philo[i].philo_id = i + 1;
-
 		philo[i].left_fork = i;
 		philo[i].right_fork = (philo_info->number_of_philosophers + i - 1) % philo_info->number_of_philosophers;
 
 		philo[i].bridg.time_to_eat = philo_info->time_to_eat;
 		philo[i].bridg.time_to_die = philo_info->time_to_die;
 		philo[i].bridg.time_to_sleep = philo_info->time_to_sleep;
-		// philo[i].bridg.number_of_philosophers = philo_info->number_of_philosophers;
-		// philo[i].bridg.for_printing = philo_info->for_printing;
-		// philo[i].bridg.for_eating = philo_info->for_eating;
+
+		philo[i].bridg = *philo_info; // tanjawi will explain latter
+   		pthread_mutex_init(&(philo_info->forks[i]), NULL);
 		i++;
 	}
-
-
-	i = 0;
-	while (i < philo_info->number_of_philosophers)
-		pthread_mutex_init(&philo->bridg.forks[i++], NULL);
-
-	pthread_mutex_init(&philo->bridg.for_printing, NULL);
-	pthread_mutex_init(&philo->bridg.for_eating, NULL);
+	// // pthread_mutex_init(&philo->bridg.for_printing, NULL);
+	// // pthread_mutex_init(&philo->bridg.for_eating, NULL);
 	return philo;
 }
 
 int creat_phiolosofers(t_argument *philo_info)
 {
-	philo_info->philo_init = malloc(sizeof(pthread_t) * philo_info->number_of_philosophers);
 	s_philo *philosofers;
 
-	int i;
-
+	// philo_info->philo_init = malloc(sizeof(pthread_t) * philo_info->number_of_philosophers);
 	philosofers = malloc(sizeof(s_philo) * philo_info->number_of_philosophers);
 
-	philosofers = init_philo(philosofers, philo_info);
+	int i = 0;
+	
+	init_philo(philosofers, philo_info);
+	// exit(0);
 	
 	i = 0;
 	while (i < philo_info->number_of_philosophers)
 	{
-		if(pthread_create(&philo_info->philo_init[i], NULL, &ft_action, &philosofers[i]))
+		if(pthread_create(&(philosofers[i].th), NULL, &ft_action, &philosofers[i]))
 			return 1;
 		i++;
 	}
 	i = 0;
 	while (i < philo_info->number_of_philosophers)
 	{
-		if (pthread_join(philo_info->philo_init[i], NULL))
+		if (pthread_join(philosofers[i].th, NULL))
 			return 1;
 		i++;
 	}
 
-	i = 0;
-	while (i < philo_info->number_of_philosophers)
-		pthread_mutex_destroy(&philosofers->bridg.forks[i++]);
+	// i = 0;
+	// while (i < philo_info->number_of_philosophers)
+	// 	pthread_mutex_destroy(&philosofers->bridg.forks[i++]);
 	
-	pthread_mutex_destroy(&philosofers->bridg.for_printing);
-	pthread_mutex_destroy(&philosofers->bridg.for_eating);
+	// pthread_mutex_destroy(&philosofers->bridg.for_printing);
+	// pthread_mutex_destroy(&philosofers->bridg.for_eating);
 
-	i = 0;
-	while (i < philo_info->number_of_philosophers)
-	{
-		free(&philosofers[i++]);
-		free(&philosofers->bridg.forks[i++]);
-	}
-	free(philo_info->philo_init);
+	// i = 0;
+	// while (i < philo_info->number_of_philosophers)
+	// {
+	// 	free(&philosofers[i++]);
+	// 	free(&philosofers->bridg.forks[i++]);
+	// }
+	// free(philo_info->philo_init);
 	return  0;
 }
 

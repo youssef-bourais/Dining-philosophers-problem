@@ -6,7 +6,7 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/18 17:03:27 by ybourais          #+#    #+#             */
-/*   Updated: 2023/05/04 20:16:38 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/05/05 20:13:37 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@
 #include <pthread.h>
 #include <sys/time.h>
 # include <limits.h>
+# include <string.h>
 
 // typedef struct argument t_argument;
 typedef struct indices
@@ -48,9 +49,8 @@ typedef struct argument
 	int number_of_times_each_philosopher_must_eat;
 
 	pthread_mutex_t *forks;
-	pthread_mutex_t for_printing;
-	pthread_mutex_t for_eating;
-	pthread_t *philo_init;
+	// pthread_mutex_t for_printing;
+	// pthread_mutex_t for_eating;
 }	t_argument;
 
 typedef struct philosofers
@@ -59,6 +59,7 @@ typedef struct philosofers
 	int left_fork;
 	int right_fork;
 	int flage_of_eating;
+	pthread_t th;
 	t_argument bridg;
 }	s_philo;
 
