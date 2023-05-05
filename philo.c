@@ -6,7 +6,7 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 12:43:52 by ybourais          #+#    #+#             */
-/*   Updated: 2023/05/05 20:17:41 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/05/05 20:25:24 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 // ◦ timestamp_in_ms X died
 
 void eating(s_philo *philosofers)
-{	
+{
 	pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->left_fork]));
 	pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->right_fork]));
 
@@ -62,6 +62,7 @@ void *ft_action(void *arg)
 	i = 0;
     while (1)
     {
+		// pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->left_fork]));
         if ((philosofers->philo_id + i) % 2 == 0)
             eating(philosofers);
         else
@@ -89,7 +90,7 @@ s_philo *init_philo(s_philo *philo, t_argument *philo_info)
 		philo[i].bridg.time_to_die = philo_info->time_to_die;
 		philo[i].bridg.time_to_sleep = philo_info->time_to_sleep;
 
-		philo[i].bridg = *philo_info; // tanjawi will explain latter
+		philo[i].bridg = *philo_info;
    		pthread_mutex_init(&(philo_info->forks[i]), NULL);
 		i++;
 	}
