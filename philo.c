@@ -6,7 +6,7 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 12:43:52 by ybourais          #+#    #+#             */
-/*   Updated: 2023/05/06 18:47:28 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/05/06 18:54:06 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,7 +121,7 @@ void init_philo(s_philo *philo, t_argument *philo_info)
 		philo[i].bridg.time_to_die = philo_info->time_to_die;
 		philo[i].bridg.time_to_sleep = philo_info->time_to_sleep;
 		philo[i].bridg.for_printing = philo_info->for_printing;
-		// philo[i].bridg.t_0 = philo_info->t_0;
+		philo[i].bridg.t_0 = philo_info->t_0;
 
 		philo[i].bridg = *philo_info;
    		pthread_mutex_init(&(philo_info->forks[i]), NULL);
