@@ -7,17 +7,16 @@ CC = cc
 
 CFLAGS = -Wall -Werror -Wextra 
 
-OBJ = $(SRCS:.c=.o)
+OBJS = $(SRCS:.c=.o)
 
 all : $(NAME)
 
-$(NAME) : $(OBJ)
-		$(CC) $(CFLAGS) $(OBJ) -o $(NAME)
-
+$(NAME) : $(OBJS)
+		$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
 clean :
 	rm -rf $(OBJS)
 
 fclean : clean
-	rm -rf $(NAME) $(OBJ)
+	rm -rf $(NAME)
 
 re : fclean all

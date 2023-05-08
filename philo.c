@@ -68,28 +68,37 @@ void *ft_action(void *arg)
 	struct timeval end;
     s_philo *philosofers = (s_philo *)arg;
 
+	philosofers->flage_of_dieing = 1;
+
 	gettimeofday(&(philosofers->bridg.t_0), 0);
 	gettimeofday(&end, 0);
 
-    int i;
-
-	if (philosofers->philo_id % 2 == 0)
+	if (philosofers->philo_id % 2 != 0)
 	{
 		thinking(philosofers, end);
 		usleep((philosofers->bridg.time_to_eat) * 1000);
 	}
 
-	i = 0;
     while (1)
     {
-        if (((philosofers->philo_id) + i )% 2 != 0)
-		{
-         	eating(philosofers, end);
-			sleeping(philosofers, end);
-		}
-        else
-            thinking(philosofers, end);
-        i++;
+       	// if (timer(philosofers, philosofers->starving) > philosofers->bridg.time_to_die)
+		// {
+		// 	printf("%d\n", philosofers->bridg.time_to_die);
+		// 	philosofers->flage_of_dieing = 0;
+		// }
+		// printf("%d\n", timer(philosofers, philosofers->starving));
+		// if (philosofers->flage_of_dieing == 0)
+		// {
+		// 	printf("%d %d died\n", timer(philosofers, end), philosofers->philo_id);
+		// 	break;
+		// }
+        eating(philosofers, end);
+		// gettimeofday(&(philosofers->starving), 0);
+		// sleep(1);
+		// printf("%d\n", timer(philosofers, philosofers->starving));
+		// exit(0);
+		sleeping(philosofers, end);
+		thinking(philosofers, end);
     }
     return NULL;
 }
