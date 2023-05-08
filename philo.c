@@ -68,7 +68,7 @@ void *ft_action(void *arg)
 	struct timeval end;
     s_philo *philosofers = (s_philo *)arg;
 
-	philosofers->flage_of_dieing = 1;
+	philosofers->philo_die = 1;
 
 	gettimeofday(&(philosofers->bridg.t_0), 0);
 	gettimeofday(&end, 0);
@@ -97,6 +97,11 @@ void *ft_action(void *arg)
 		// sleep(1);
 		// printf("%d\n", timer(philosofers, philosofers->starving));
 		// exit(0);
+		if (!philosofers->philo_die)
+		{
+			/* do this */
+		}
+		
 		sleeping(philosofers, end);
 		thinking(philosofers, end);
     }

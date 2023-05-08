@@ -56,7 +56,7 @@ typedef struct philosofers
 	int philo_id;
 	int left_fork;
 	int right_fork;
-	int flage_of_dieing;
+	int philo_die;
 	struct timeval starving;
 	pthread_t th;
 	t_argument bridg;
