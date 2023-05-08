@@ -18,6 +18,8 @@
 // ◦ timestamp_in_ms X is thinking
 // ◦ timestamp_in_ms X died
 
+// number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
+
 int timer(s_philo *time, struct timeval t_1)
 {
 	gettimeofday(&t_1, 0);
@@ -44,15 +46,11 @@ void eating(s_philo *philosofers, struct timeval init)
 	pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->left_fork]));
 	pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->right_fork]));
 
-	pthread_mutex_lock(&(philosofers->bridg.for_printing));
-	printf("%d philosopher %d has taken a fork\n", timer(philosofers, init), philosofers->philo_id);
-	pthread_mutex_unlock(&(philosofers->bridg.for_printing));
+	printf("%d %d has taken a fork\n", timer(philosofers, init), philosofers->philo_id);
 
-	pthread_mutex_lock(&(philosofers->bridg.for_printing));
-	printf("%d philosofpher %d is etating\n", timer(philosofers, init), philosofers->philo_id);
-	pthread_mutex_unlock(&(philosofers->bridg.for_printing));
-	
-	ft_usleep(philosofers->bridg.time_to_eat);
+	printf("%d %d is eating\n", timer(philosofers, init), philosofers->philo_id);
+
+	usleep((philosofers->bridg.time_to_eat)*1000);
 
 	pthread_mutex_unlock(&(philosofers->bridg.forks[philosofers->right_fork]));
 	pthread_mutex_unlock(&(philosofers->bridg.forks[philosofers->left_fork]));
@@ -60,17 +58,13 @@ void eating(s_philo *philosofers, struct timeval init)
 
 void sleeping(s_philo *philosofers, struct timeval init)
 {
-	pthread_mutex_lock(&(philosofers->bridg.for_printing));
-	printf("%d philosopher %d is sleeping\n", timer(philosofers, init),philosofers->philo_id);
-	pthread_mutex_unlock(&(philosofers->bridg.for_printing));
-	ft_usleep(philosofers->bridg.time_to_sleep);
+	printf("%d %d is sleeping\n", timer(philosofers, init),philosofers->philo_id);
+	usleep((philosofers->bridg.time_to_sleep) * 1000);
 }
 
 void thinking(s_philo *philosofers, struct timeval init)
 {
-	pthread_mutex_lock(&(philosofers->bridg.for_printing));
-	printf("%d philosopher %d is thinking\n", timer(philosofers, init), philosofers->philo_id);
-	pthread_mutex_unlock(&(philosofers->bridg.for_printing));
+	printf("%d %d is thinking\n", timer(philosofers, init), philosofers->philo_id);
 }
 
 void *ft_action(void *arg)
@@ -82,23 +76,23 @@ void *ft_action(void *arg)
 	gettimeofday(&end, 0);
 
     int i;
-	if (philosofers->philo_id % 2 != 0)
+
+	if (philosofers->philo_id % 2 == 0)
 	{
 		thinking(philosofers, end);
-		ft_usleep((philosofers->bridg.time_to_eat));
+		usleep((philosofers->bridg.time_to_eat) * 1000);
 	}
 
 	i = 0;
     while (1)
     {
-        if ((philosofers->philo_id + i) % 2 == 0)
+        if (((philosofers->philo_id) + i )% 2 != 0)
 		{
-            eating(philosofers, end);
+         	eating(philosofers, end);
 			sleeping(philosofers, end);
 		}
         else
             thinking(philosofers, end);
-        // ft_usleep(1000);
         i++;
     }
     return NULL;
