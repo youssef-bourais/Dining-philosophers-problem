@@ -12,10 +12,6 @@
 
 # include "philo.h"
 
-// ◦ timestamp_in_ms X died
-
-// number_of_philosophers time_to_die time_to_eat time_to_sleep [number_of_times_each_philosopher_must_eat]
-
 void thinking(s_philo *philosofers, struct timeval init);
 int timer(s_philo *time, struct timeval t_1)
 {
