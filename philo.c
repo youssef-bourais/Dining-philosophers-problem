@@ -92,7 +92,7 @@ void *ft_action(void *arg)
 			printf("%d %d died\n", timer(philosofers, end), philosofers->philo_id);
 			break;
 		}
-        eating(philosofers, end, i);
+		eating(philosofers, end, i);
 		gettimeofday(&(philosofers->starving), 0);
 		sleeping(philosofers, end);
 		thinking(philosofers, end);
