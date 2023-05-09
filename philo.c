@@ -12,6 +12,8 @@
 
 # include "philo.h"
 
+// ◦ timestamp_in_ms X died
+
 void thinking(s_philo *philosofers, struct timeval init);
 int timer(s_philo *time, struct timeval t_1)
 {
