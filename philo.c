@@ -33,7 +33,7 @@ void ft_usleep(unsigned int time)
 	{
 		if ((t_1.tv_sec - t_0.tv_sec)*1000 + (t_1.tv_usec - t_0.tv_usec)/1000 >= time)
 			break;
-		nanosleep(1);
+		usleep(2);
 		gettimeofday(&t_1, 0);
 	}
 }
