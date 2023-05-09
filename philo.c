@@ -23,7 +23,7 @@ int timer(s_philo *time, struct timeval t_1)
 	return(((t_1.tv_usec - time->bridg.t_0.tv_usec) + ((t_1.tv_sec - time->bridg.t_0.tv_sec) * 1000000))/1000);
 }
 
-void ft_usleep(int time)
+void ft_usleep(unsigned int time)
 {
 	struct timeval t_0, t_1;
 	gettimeofday(&t_1, 0);
@@ -33,7 +33,7 @@ void ft_usleep(int time)
 	{
 		if ((t_1.tv_sec - t_0.tv_sec)*1000 + (t_1.tv_usec - t_0.tv_usec)/1000 >= time)
 			break;
-		usleep(50);
+		nanosleep(1);
 		gettimeofday(&t_1, 0);
 	}
 }
@@ -43,7 +43,7 @@ void eating(s_philo *philosofers, struct timeval init, int p)
 	if ((philosofers->philo_id == 1) && p == 0 && philosofers->bridg.number_of_philosophers % 2 != 0)
 	{
 		thinking(philosofers, init);
-		usleep((philosofers->bridg.time_to_eat) * 1000);
+		ft_usleep((philosofers->bridg.time_to_eat));
 	}
 
 	pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->left_fork]));
@@ -53,7 +53,7 @@ void eating(s_philo *philosofers, struct timeval init, int p)
 
 	printf("%d philo %d is eating\n", timer(philosofers, init), philosofers->philo_id);
 
-	usleep((philosofers->bridg.time_to_eat)*1000);
+	ft_usleep((philosofers->bridg.time_to_eat));
 
 	pthread_mutex_unlock(&(philosofers->bridg.forks[philosofers->right_fork]));
 	pthread_mutex_unlock(&(philosofers->bridg.forks[philosofers->left_fork]));
@@ -62,7 +62,7 @@ void eating(s_philo *philosofers, struct timeval init, int p)
 void sleeping(s_philo *philosofers, struct timeval init)
 {
 	printf("%d philo %d is sleeping\n", timer(philosofers, init),philosofers->philo_id);
-	usleep((philosofers->bridg.time_to_sleep) * 1000);
+	ft_usleep((philosofers->bridg.time_to_sleep));
 }
 
 void thinking(s_philo *philosofers, struct timeval init)
@@ -83,7 +83,7 @@ void *ft_action(void *arg)
 	if (philosofers->philo_id % 2 != 0)
 	{
 		thinking(philosofers, end);
-		usleep((philosofers->bridg.time_to_eat) * 1000);
+		ft_usleep((philosofers->bridg.time_to_eat));
 	}
 
 	int i = 0;
@@ -114,7 +114,7 @@ void *ft_action(void *arg)
 
 		if (i == philosofers->bridg.number_of_times_each_philosopher_must_eat - 1)
 		{
-			// return NULL;
+			return NULL;
 			exit(0);
 		}
 		i++;
