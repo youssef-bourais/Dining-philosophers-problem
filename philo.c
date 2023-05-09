@@ -86,9 +86,7 @@ void *ft_action(void *arg)
     while (1)
     {
        	if (timer(philosofers, philosofers->starving) >= philosofers->bridg.time_to_die)
-		{
 			philosofers->philo_die = 0;
-		}
 		if (philosofers->philo_die == 0)
 		{
 			printf("%d %d died\n", timer(philosofers, end), philosofers->philo_id);
@@ -100,10 +98,7 @@ void *ft_action(void *arg)
 		thinking(philosofers, end);
 
 		if (i == philosofers->bridg.number_of_times_each_philosopher_must_eat - 1)
-		{
 			return NULL;
-			exit(0);
-		}
 		i++;
     }
     return NULL;
