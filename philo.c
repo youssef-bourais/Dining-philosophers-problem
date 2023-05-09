@@ -36,7 +36,7 @@ void ft_usleep(unsigned int time)
 
 void eating(s_philo *philosofers, struct timeval init, int p)
 {
-	if ((philosofers->philo_id == 1) && p == 0 && philosofers->bridg.number_of_philosophers % 2 != 0)
+	if ((philosofers->philo_id == 1) && p == 1 && philosofers->bridg.number_of_philosophers % 2 != 0)
 	{
 		thinking(philosofers, init);
 		ft_usleep((philosofers->bridg.time_to_eat));
@@ -45,9 +45,9 @@ void eating(s_philo *philosofers, struct timeval init, int p)
 	pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->left_fork]));
 	pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->right_fork]));
 
-	printf("%d philo %d has taken a fork\n", timer(philosofers, init), philosofers->philo_id);
+	printf("%d %d has taken a fork\n", timer(philosofers, init), philosofers->philo_id);
 
-	printf("%d philo %d is eating\n", timer(philosofers, init), philosofers->philo_id);
+	printf("%d %d is eating\n", timer(philosofers, init), philosofers->philo_id);
 
 	ft_usleep((philosofers->bridg.time_to_eat));
 
@@ -57,13 +57,13 @@ void eating(s_philo *philosofers, struct timeval init, int p)
 
 void sleeping(s_philo *philosofers, struct timeval init)
 {
-	printf("%d philo %d is sleeping\n", timer(philosofers, init),philosofers->philo_id);
+	printf("%d %d is sleeping\n", timer(philosofers, init),philosofers->philo_id);
 	ft_usleep((philosofers->bridg.time_to_sleep));
 }
 
 void thinking(s_philo *philosofers, struct timeval init)
 {
-	printf("%d philo %d is thinking\n", timer(philosofers, init), philosofers->philo_id);
+	printf("%d %d is thinking\n", timer(philosofers, init), philosofers->philo_id);
 }
 
 void *ft_action(void *arg)
@@ -82,29 +82,20 @@ void *ft_action(void *arg)
 		ft_usleep((philosofers->bridg.time_to_eat));
 	}
 
-	int i = 0;
+	int i = 1;
     while (1)
     {
-       	// if (timer(philosofers, philosofers->starving) > philosofers->bridg.time_to_die)
-		// {
-		// 	printf("%d\n", philosofers->bridg.time_to_die);
-		// 	philosofers->flage_of_dieing = 0;
-		// }
-		// printf("%d\n", timer(philosofers, philosofers->starving));
-		// if (philosofers->flage_of_dieing == 0)
-		// {
-		// 	printf("%d %d died\n", timer(philosofers, end), philosofers->philo_id);
-		// 	break;
-		// }
+       	if (timer(philosofers, philosofers->starving) >= philosofers->bridg.time_to_die)
+		{
+			philosofers->philo_die = 0;
+		}
+		if (philosofers->philo_die == 0)
+		{
+			printf("%d %d died\n", timer(philosofers, end), philosofers->philo_id);
+			break;
+		}
         eating(philosofers, end, i);
-		// gettimeofday(&(philosofers->starving), 0);
-		// sleep(1);
-		// printf("%d\n", timer(philosofers, philosofers->starving));
-		// exit(0);
-		// if (!philosofers->philo_die)
-		// {
-		// 	/* do this */
-		// }
+		gettimeofday(&(philosofers->starving), 0);
 		sleeping(philosofers, end);
 		thinking(philosofers, end);
 
