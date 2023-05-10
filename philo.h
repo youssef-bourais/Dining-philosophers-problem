@@ -37,6 +37,7 @@ typedef struct info
 }	s_info;
 
 typedef struct argument t_argument;
+typedef struct  philosofers s_philo;
 
 typedef struct argument
 {
@@ -45,7 +46,7 @@ typedef struct argument
 	int time_to_eat;
 	int time_to_sleep;
 	int number_of_times_each_philosopher_must_eat;
-
+	int philo_die;
 	pthread_mutex_t *forks;
 	pthread_mutex_t for_printing;
 	struct timeval t_0;
@@ -56,7 +57,6 @@ typedef struct philosofers
 	int philo_id;
 	int left_fork;
 	int right_fork;
-	int philo_die;
 	struct timeval starving;
 	pthread_t th;
 	t_argument bridg;

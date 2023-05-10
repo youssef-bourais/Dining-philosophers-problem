@@ -13,10 +13,18 @@
 # include "philo.h"
 
 void thinking(s_philo *philosofers, struct timeval init);
+
 int timer(s_philo *time, struct timeval t_1)
 {
 	gettimeofday(&t_1, 0);
-	return(((t_1.tv_usec - time->bridg.t_0.tv_usec) + ((t_1.tv_sec - time->bridg.t_0.tv_sec) * 1000000))/1000);
+	return((t_1.tv_sec*1000 + t_1.tv_usec/1000) - (time->bridg.t_0.tv_sec*1000 + time->bridg.t_0.tv_usec/1000));
+}
+
+int time_deff(struct timeval t_1)
+{
+	struct timeval t_0;
+	gettimeofday(&t_0, 0);
+	return((t_0.tv_sec*1000 + t_0.tv_usec/1000) - (t_1.tv_sec*1000 + t_1.tv_usec/1000));
 }
 
 void ft_usleep(unsigned int time)
@@ -27,21 +35,15 @@ void ft_usleep(unsigned int time)
 
 	while (1)
 	{
-		if ((t_1.tv_sec - t_0.tv_sec)*1000 + (t_1.tv_usec - t_0.tv_usec)/1000 >= time)
-			break;
-		usleep(270);
+		if ((t_1.tv_sec*1000 + t_1.tv_usec/1000) - (t_0.tv_sec*1000 + t_0.tv_usec/1000) >= time)
+			return ;
+		usleep(300);
 		gettimeofday(&t_1, 0);
 	}
 }
 
-void eating(s_philo *philosofers, struct timeval init, int p)
+void eating(s_philo *philosofers, struct timeval init)
 {
-	if ((philosofers->philo_id == 1) && p == 1 && philosofers->bridg.number_of_philosophers % 2 != 0)
-	{
-		thinking(philosofers, init);
-		ft_usleep((philosofers->bridg.time_to_eat));
-	}
-
 	pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->left_fork]));
 	pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->right_fork]));
 
@@ -71,7 +73,7 @@ void *ft_action(void *arg)
 	struct timeval end;
     s_philo *philosofers = (s_philo *)arg;
 
-	philosofers->philo_die = 1;
+	philosofers->bridg.philo_die = 0;
 
 	gettimeofday(&(philosofers->bridg.t_0), 0);
 	gettimeofday(&end, 0);
@@ -79,25 +81,29 @@ void *ft_action(void *arg)
 	if (philosofers->philo_id % 2 != 0)
 	{
 		thinking(philosofers, end);
-		ft_usleep((philosofers->bridg.time_to_eat));
+		// ft_usleep((philosofers->bridg.time_to_eat));
 	}
 
+	// pthread_mutex_init(&(philosofers->bridg.for_printing), NULL);
 	int i = 1;
     while (1)
     {
-       	if (timer(philosofers, philosofers->starving) >= philosofers->bridg.time_to_die)
-			philosofers->philo_die = 0;
-		if (philosofers->philo_die == 0)
+		if (timer(philosofers, end) - time_deff(philosofers->starving) > philosofers->bridg.time_to_die)
 		{
-			printf("%d %d died\n", timer(philosofers, end), philosofers->philo_id);
-			break;
+			philosofers->bridg.time_to_die = 1;
 		}
-		eating(philosofers, end, i);
+		// if (philosofers->bridg.time_to_die == 1)
+		// {
+		// 	pthread_mutex_lock(&(philosofers->bridg.for_printing));
+		// 	printf("%d %d died\n", timer(philosofers, end), philosofers->philo_id);
+		// 	pthread_mutex_unlock(&(philosofers->bridg.for_printing));
+		// 	return NULL;
+		// }
+		eating(philosofers, end);
 		gettimeofday(&(philosofers->starving), 0);
 		sleeping(philosofers, end);
 		thinking(philosofers, end);
-
-		if (i == philosofers->bridg.number_of_times_each_philosopher_must_eat - 1)
+		if (i == philosofers->bridg.number_of_times_each_philosopher_must_eat)
 			return NULL;
 		i++;
     }
@@ -127,7 +133,6 @@ void init_philo(s_philo *philo, t_argument *philo_info)
    		pthread_mutex_init(&(philo_info->forks[i]), NULL);
 		i++;
 	}
-	pthread_mutex_init(&(philo->bridg.for_printing), NULL);
 }
 
 int creat_phiolosofers(t_argument *philo_info)
@@ -135,6 +140,7 @@ int creat_phiolosofers(t_argument *philo_info)
 	s_philo *philosofers;
 
 	philosofers = malloc(sizeof(s_philo) * philo_info->number_of_philosophers);
+	// philo_info->th = malloc(sizeof(pthread_t) * philo_info->number_of_philosophers);
 
 	int i = 0;
 	
@@ -150,7 +156,7 @@ int creat_phiolosofers(t_argument *philo_info)
 	i = 0;
 	while (i < philo_info->number_of_philosophers)
 	{
-		if (pthread_join(philosofers[i].th, NULL))
+		if (pthread_join((philosofers[i].th), NULL))
 			return 0;
 		i++;
 	}
