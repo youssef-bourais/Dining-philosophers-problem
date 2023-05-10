@@ -49,7 +49,9 @@ typedef struct argument
 	int philo_die;
 	pthread_mutex_t *forks;
 	pthread_mutex_t for_printing;
+	pthread_t *th;
 	struct timeval t_0;
+	s_philo *road;
 }	t_argument;
 
 typedef struct philosofers
