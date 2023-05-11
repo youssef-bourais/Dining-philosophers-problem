@@ -46,6 +46,7 @@ typedef struct argument
 	int time_to_eat;
 	int time_to_sleep;
 	int number_of_times_each_philosopher_must_eat;
+	struct timeval *last_meal;
 	pthread_mutex_t *forks;
 	struct timeval t_0;
 }	t_argument;
@@ -55,7 +56,6 @@ typedef struct philosofers
 	int philo_id;
 	int left_fork;
 	int right_fork;
-	struct timeval last_meal;
 	pthread_t th;
 	t_argument *bridg;
 }	s_philo;
