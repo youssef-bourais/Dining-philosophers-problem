@@ -47,6 +47,7 @@ void eating(s_philo *philosofers)
 	printf("%d %d is eating\n", timer(philosofers), philosofers->philo_id);
 
 	ft_usleep((philosofers->bridg->time_to_eat));
+
 	gettimeofday(&philosofers->bridg->last_meal[philosofers->philo_id - 1], 0);
 
 	pthread_mutex_unlock(&(philosofers->bridg->forks[philosofers->right_fork]));
@@ -95,7 +96,7 @@ int check_and_kill(t_argument *philo_info)
 	id = 0;
 	while (id < philo_info->number_of_philosophers)
 	{
-		if ((t_now.tv_sec*1000 + t_now.tv_usec/1000) - (philo_info->last_meal[id].tv_sec*1000 + philo_info->last_meal[id].tv_usec/1000) > philo_info->time_to_die)
+		if ((t_now.tv_sec*1000 + t_now.tv_usec/1000) - (philo_info->last_meal[id].tv_sec*1000 + philo_info->last_meal[id].tv_usec/1000) >= philo_info->time_to_die)
 			return id + 1;
 		else
 			id++;
@@ -107,7 +108,7 @@ void init_philo(s_philo *philo, t_argument *philo_info)
 {
 	int i;
 
-	philo_info->forks = malloc(sizeof(pthread_mutex_t) * philo_info->number_of_philosophers + 1);
+	philo_info->forks = malloc(sizeof(pthread_mutex_t) * philo_info->number_of_philosophers);
 
 	i = 0;
 	while (i < philo_info->number_of_philosophers)
@@ -120,7 +121,6 @@ void init_philo(s_philo *philo, t_argument *philo_info)
    		pthread_mutex_init(&(philo_info->forks[i]), NULL);
 		i++;
 	}
-	pthread_mutex_init(&(philo_info->forks[i]), NULL);
 }
 
 void free_resources(t_argument *philo_info, s_philo *philosofers)
@@ -150,6 +150,7 @@ int creat_phiolosofers(t_argument *philo_info)
 	{
 		if(pthread_create(&(philosofers[i].th), NULL, &ft_action, &philosofers[i]))
 			return 0;
+		usleep(4);
 		i++;
 	}
 	while (1)
@@ -184,16 +185,16 @@ s_info fill_data(s_indices *param, int argc, char **argv)
 	s_info info = {0, 0};
 	
 	info.arr = malloc(sizeof(int) * _nbr(argc, argv));
-	if (argc > 1 && (_nbr(argc, argv) == 4 || _nbr(argc, argv) == 5)) // cheak num of args
+	if (argc > 1 && (_nbr(argc, argv) == 4 || _nbr(argc, argv) == 5))
 	{
 		while (param->i < argc - 1)
 		{
-			param->temp = ft_split(argv[param->i + 1]); // fill the table
+			param->temp = ft_split(argv[param->i + 1]);
 			param->k = 0;
 			while (param->temp[param->k] != NULL)
 			{
 				if ((!a_toi(param->temp[param->k], &(param->h)) || a_toi(param->temp[param->k], &(param->h))) && param->h == 1)
-					info.arr[param->j++] = a_toi(param->temp[param->k], &(param->h)); // fill the array
+					info.arr[param->j++] = a_toi(param->temp[param->k], &(param->h));
 				else
 					info.e = 1;
 				param->k++;
