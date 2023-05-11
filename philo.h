@@ -36,9 +36,6 @@ typedef struct info
 	int *arr;
 }	s_info;
 
-typedef struct argument t_argument;
-typedef struct  philosofers s_philo;
-
 typedef struct argument
 {
 	int number_of_philosophers;
