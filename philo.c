@@ -12,24 +12,19 @@
 
 # include "philo.h"
 
-void thinking(s_philo *philosofers, struct timeval init);
+void thinking(s_philo *philosofers);
 
-int timer(s_philo *time, struct timeval t_1)
+int timer(s_philo *time)
 {
+	struct timeval t_1;
 	gettimeofday(&t_1, 0);
-	return((t_1.tv_sec*1000 + t_1.tv_usec/1000) - (time->bridg.t_0.tv_sec*1000 + time->bridg.t_0.tv_usec/1000));
-}
-
-int time_deff(struct timeval t_1)
-{
-	struct timeval t_0;
-	gettimeofday(&t_0, 0);
-	return((t_0.tv_sec*1000 + t_0.tv_usec/1000) - (t_1.tv_sec*1000 + t_1.tv_usec/1000));
+	return((t_1.tv_sec*1000 + t_1.tv_usec/1000) - (time->bridg->t_0.tv_sec*1000 + time->bridg->t_0.tv_usec/1000));
 }
 
 void ft_usleep(unsigned int time)
 {
 	struct timeval t_0, t_1;
+
 	gettimeofday(&t_1, 0);
 	gettimeofday(&t_0, 0);
 
@@ -42,78 +37,49 @@ void ft_usleep(unsigned int time)
 	}
 }
 
-void eating(s_philo *philosofers, struct timeval init)
+void eating(s_philo *philosofers)
 {
-	pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->left_fork]));
-	pthread_mutex_lock(&(philosofers->bridg.forks[philosofers->right_fork]));
+	pthread_mutex_lock(&(philosofers->bridg->forks[philosofers->left_fork]));
+	pthread_mutex_lock(&(philosofers->bridg->forks[philosofers->right_fork]));
 
-	printf("%d %d has taken a fork\n", timer(philosofers, init), philosofers->philo_id);
+	printf("%d %d has taken a fork\n", timer(philosofers), philosofers->philo_id);
 
-	printf("%d %d is eating\n", timer(philosofers, init), philosofers->philo_id);
+	printf("%d %d is eating\n", timer(philosofers), philosofers->philo_id);
 
-	ft_usleep((philosofers->bridg.time_to_eat));
+	ft_usleep((philosofers->bridg->time_to_eat));
+	gettimeofday(&philosofers->last_meal, 0);
 
-	pthread_mutex_unlock(&(philosofers->bridg.forks[philosofers->right_fork]));
-	pthread_mutex_unlock(&(philosofers->bridg.forks[philosofers->left_fork]));
+	pthread_mutex_unlock(&(philosofers->bridg->forks[philosofers->right_fork]));
+	pthread_mutex_unlock(&(philosofers->bridg->forks[philosofers->left_fork]));
 }
 
-void sleeping(s_philo *philosofers, struct timeval init)
+void sleeping(s_philo *philosofers)
 {
-	printf("%d %d is sleeping\n", timer(philosofers, init),philosofers->philo_id);
-	ft_usleep((philosofers->bridg.time_to_sleep));
+	printf("%d %d is sleeping\n", timer(philosofers),philosofers->philo_id);
+	ft_usleep((philosofers->bridg->time_to_sleep));
 }
 
-void thinking(s_philo *philosofers, struct timeval init)
+void thinking(s_philo *philosofers)
 {
-	printf("%d %d is thinking\n", timer(philosofers, init), philosofers->philo_id);
-}
-
-int kill_philo(s_philo *philosofers)
-{
-	struct timeval end;
-	gettimeofday(&end, 0);
-
-	printf("%d %d is died\n", timer(philosofers, end), philosofers->philo_id);
-	return 0;
+	printf("%d %d is thinking\n", timer(philosofers), philosofers->philo_id);
 }
 
 void *ft_action(void *arg)
 {
-	struct timeval end;
     s_philo *philosofers = (s_philo *)arg;
-
-	philosofers->bridg.philo_die = 0;
-
-	gettimeofday(&(philosofers->bridg.t_0), 0);
-	gettimeofday(&end, 0);
 
 	if (philosofers->philo_id % 2 != 0)
 	{
-		thinking(philosofers, end);
-		ft_usleep((philosofers->bridg.time_to_eat));
+		thinking(philosofers);
+		ft_usleep((philosofers->bridg->time_to_eat));
 	}
 
 	int i = 1;
     while (1)
-    {
-		if (timer(philosofers, end) - time_deff(philosofers->starving) > philosofers->bridg.time_to_die)
-		{
-			pthread_mutex_lock(&(philosofers->bridg.for_printing));
-			philosofers->bridg.time_to_die = 1;
-			pthread_mutex_unlock(&(philosofers->bridg.for_printing));
-
-		}
-		// if (philosofers->bridg.time_to_die == 1)
-		// {
-		// 	if(!kill_philo(philosofers))
-		// 		return NULL;
-		// }
-		eating(philosofers, end);
-		gettimeofday(&(philosofers->starving), 0);
-		sleeping(philosofers, end);
-		thinking(philosofers, end);
-		if (i == philosofers->bridg.number_of_times_each_philosopher_must_eat)
-			return NULL;
+    {	
+		eating(philosofers);
+		sleeping(philosofers);
+		thinking(philosofers);
 		i++;
     }
     return NULL;
@@ -123,7 +89,7 @@ void init_philo(s_philo *philo, t_argument *philo_info)
 {
 	int i;
 
-	philo_info->forks = malloc(sizeof(pthread_mutex_t) * philo_info->number_of_philosophers);
+	philo_info->forks = malloc(sizeof(pthread_mutex_t) * philo_info->number_of_philosophers + 1);
 
 	i = 0;
 	while (i < philo_info->number_of_philosophers)
@@ -131,42 +97,11 @@ void init_philo(s_philo *philo, t_argument *philo_info)
 		philo[i].philo_id = i + 1;
 		philo[i].left_fork = i;
 		philo[i].right_fork = (philo_info->number_of_philosophers + i - 1) % philo_info->number_of_philosophers;
-
-		philo[i].bridg.time_to_eat = philo_info->time_to_eat;
-		philo[i].bridg.time_to_die = philo_info->time_to_die;
-		philo[i].bridg.time_to_sleep = philo_info->time_to_sleep;
-		philo[i].bridg.for_printing = philo_info->for_printing;
-		philo[i].bridg.t_0 = philo_info->t_0;
-
-		philo[i].bridg = *philo_info;
+		philo[i].bridg = philo_info;
    		pthread_mutex_init(&(philo_info->forks[i]), NULL);
 		i++;
 	}
-	
-	philo_info->road = philo;
-	pthread_mutex_init(&(philo_info->for_printing), NULL);
-}
-
-void *test(void *arg)
-{
-	struct timeval end;
-
-	t_argument *checker = (t_argument *)arg;
-	gettimeofday(&end, 0);
-	printf("%d\n", checker->road[5].philo_id);
-	exit(0);
-
-	while (1)
-	{
-		if (checker->philo_die == 1)
-		{
-			int i = 0;
-			while (i < checker->number_of_philosophers)
-				pthread_detach(checker->th[i++]);
-			printf("%d %d is died\n", timer(checker->road, end), checker->road->philo_id);
-			return NULL;
-		}
-	}
+	pthread_mutex_init(&(philo_info->forks[i]), NULL);
 }
 
 int creat_phiolosofers(t_argument *philo_info)
@@ -174,32 +109,30 @@ int creat_phiolosofers(t_argument *philo_info)
 	s_philo *philosofers;
 
 	philosofers = malloc(sizeof(s_philo) * philo_info->number_of_philosophers);
-	philo_info->th = malloc(sizeof(pthread_t) * philo_info->number_of_philosophers + 1);
 
 	int i = 0;
 
 	init_philo(philosofers, philo_info);
+	gettimeofday(&philosofers->bridg->t_0, 0);
 
 	i = 0;
 	while (i < philo_info->number_of_philosophers)
 	{
-		if(pthread_create(&(philo_info->th[i]), NULL, &ft_action, &philosofers[i]))
+		if(pthread_create(&(philosofers[i].th), NULL, &ft_action, &philosofers[i]))
 			return 0;
 		i++;
 	}
-	pthread_create(&(philo_info->th[i]), NULL, &test, &philo_info);
 	i = 0;
-	while (i <= philo_info->number_of_philosophers)
+	while (i < philo_info->number_of_philosophers)
 	{
-		if (pthread_join(philo_info->th[i], NULL))
+		if (pthread_join(philosofers[i].th, NULL))
 			return 0;
 		i++;
 	}
+
 	i = 0;
 	while (i < philo_info->number_of_philosophers)
 		pthread_mutex_destroy(&(philo_info->forks[i++]));
-
-	pthread_mutex_destroy(&(philosofers->bridg.for_printing));
 
 	free(philosofers);
 	free(philo_info->forks);

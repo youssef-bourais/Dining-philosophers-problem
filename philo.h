@@ -46,12 +46,8 @@ typedef struct argument
 	int time_to_eat;
 	int time_to_sleep;
 	int number_of_times_each_philosopher_must_eat;
-	int philo_die;
 	pthread_mutex_t *forks;
-	pthread_mutex_t for_printing;
-	pthread_t *th;
 	struct timeval t_0;
-	s_philo *road;
 }	t_argument;
 
 typedef struct philosofers
@@ -59,9 +55,9 @@ typedef struct philosofers
 	int philo_id;
 	int left_fork;
 	int right_fork;
-	struct timeval starving;
+	struct timeval last_meal;
 	pthread_t th;
-	t_argument bridg;
+	t_argument *bridg;
 }	s_philo;
 
 int nbr_word(char *str);
