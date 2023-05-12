@@ -19,6 +19,7 @@
 #include <pthread.h>
 #include <sys/time.h>
 # include <limits.h>
+#include <string.h>
 
 typedef struct indices
 {
@@ -43,9 +44,14 @@ typedef struct argument
 	int time_to_eat;
 	int time_to_sleep;
 	int number_of_times_each_philosopher_must_eat;
+	int flage;
 	struct timeval *last_meal;
 	pthread_mutex_t *forks;
+	pthread_mutex_t print;
+	int *nbr_of_meals;
 	struct timeval t_0;
+	pthread_t kill;
+	
 }	t_argument;
 
 typedef struct philosofers

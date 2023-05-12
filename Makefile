@@ -5,7 +5,7 @@ SRCS = philo.c parsing.c utils.c\
 
 CC = cc
 
-CFLAGS = -Wall -Werror -Wextra 
+CFLAGS = -Wall -Werror -Wextra
 
 OBJS = $(SRCS:.c=.o)
 
