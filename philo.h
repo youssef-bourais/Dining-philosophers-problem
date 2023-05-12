@@ -47,21 +47,22 @@ typedef struct argument
 	int flage;
 	struct timeval *last_meal;
 	pthread_mutex_t *forks;
-	pthread_mutex_t print;
+	pthread_mutex_t *print;
+	pthread_t *th;
 	int *nbr_of_meals;
 	struct timeval t_0;
 	pthread_t kill;
 	
 }	t_argument;
 
-typedef struct philosofers
+typedef struct philosofers // s_philosofers
 {
 	int philo_id;
 	int left_fork;
 	int right_fork;
 	pthread_t th;
 	t_argument *bridg;
-}	s_philo;
+}	s_philo; // t_philo
 
 int nbr_word(char *str);
 void *ft_copy(char *dst, char *src, int size);
