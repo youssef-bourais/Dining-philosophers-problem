@@ -6,25 +6,27 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 10:37:39 by ybourais          #+#    #+#             */
-/*   Updated: 2023/04/28 10:40:06 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/05/13 16:28:43 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int ft_len(char *str)
+int	ft_len(char *str)
 {
-	int i = 0;
+	int	i;
+
+	i = 0;
 	if (!str)
-		return 0;
+		return (0);
 	while (str[i] != '\0')
-		i ++;
-	return i;	
+		i++;
+	return (i);
 }
 
 long	a_toi(char *str, int *handler)
 {
-	int	i;
+	int		i;
 	long	res;
 
 	i = 0;
@@ -37,7 +39,7 @@ long	a_toi(char *str, int *handler)
 		*handler = 0;
 	while (str[i] >= '0' && str[i] <= '9')
 	{
-		*handler = 1;	
+		*handler = 1;
 		res = res * 10 + str[i] - '0';
 		i++;
 	}
@@ -46,39 +48,41 @@ long	a_toi(char *str, int *handler)
 	return (res);
 }
 
-int ft_error()
+int	ft_error(void)
 {
 	write(2, "Error\n", 6);
-	return 1;
+	return (1);
 }
 
-void free_table(char **table, int size)
+int	timer(t_philo *time)
 {
-	int i = 0;
-	while (i < size)
-	{
-		free(table[i]);
-		i ++;
-	}
-	free(table);
+	struct timeval	t_1;
+
+	gettimeofday(&t_1, 0);
+	return ((t_1.tv_sec * 1000 + t_1.tv_usec / 1000) - (time->bridg->t_0.tv_sec
+			* 1000 + time->bridg->t_0.tv_usec / 1000));
 }
 
-int _nbr(int argc, char *argv[])
+void	ft_usleep(unsigned int time, t_philo *philo)
 {
-	int i = 0;
-	int counter = 0;
-	int h;
-	while (i < argc - 1)
+	struct timeval	t_0;
+	struct timeval	t_1;
+
+	gettimeofday(&t_1, 0);
+	gettimeofday(&t_0, 0);
+	while (1)
 	{
-		char **temp = ft_split(argv[i + 1]);
-		h = 0;
-		while (temp[h] != NULL)
+		if ((t_1.tv_sec * 1000 + t_1.tv_usec / 1000) - (t_0.tv_sec * 1000
+				+ t_0.tv_usec / 1000) >= time)
+			return ;
+		pthread_mutex_lock(philo->bridg->print);
+		if (philo->bridg->flage == 0)
 		{
-			counter ++;
-			h++;
+			pthread_mutex_unlock(philo->bridg->print);
+			return ;
 		}
-		free_table(temp, h);
-		i++;
+		pthread_mutex_unlock(philo->bridg->print);
+		usleep(200);
+		gettimeofday(&t_1, 0);
 	}
-	return counter;
 }

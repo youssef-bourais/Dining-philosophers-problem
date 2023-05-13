@@ -6,81 +6,49 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 15:24:26 by ybourais          #+#    #+#             */
-/*   Updated: 2023/04/04 21:53:00 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/05/13 16:38:40 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
 
-int nbr_word(char *str)
+t_argument	get_data(int *info, int nbr)
 {
-	int i = 0;
-	int counter = 0;
-	while (str[i] != '\0')
-	{
-		if ((str[i] != ' ' && str[i + 1] == ' ') || (str[i] != ' ' && str[i + 1] == '\0'))
-			counter ++;
-		i++;
-	}
-	return counter;
+	t_argument	arg;
+
+	arg.number_of_philosophers = info[0];
+	arg.time_to_die = info[1];
+	arg.time_to_eat = info[2];
+	arg.time_to_sleep = info[3];
+	if (nbr == 5)
+		arg.number_of_times_each_philosopher_must_eat = info[4];
+	return (arg);
 }
 
-
-void *ft_copy(char *dst, char *src, int size)
+t_info	fill_data(int argc, char **argv)
 {
-	int i = 0;
-	while (i < size)
+	int	i;
+	int	flage;
+	t_info	info;
+
+	info.arr = malloc(sizeof(int) * (argc - 1));
+	info.e 	= 0;
+	info.arr = 0;
+	i = 0;
+	flage = 0;
+	if (argc == 5 || argc == 6)
 	{
-		dst[i] = src[i];
-		i++;
-	}
-	return dst;	
-}
-
-char *ft_slice(char *str, int start, int len)
-{
-	char *s = (char *)malloc(sizeof(char ) * (len + 1));
-	if (!s)
-		return NULL;
-	ft_copy(s, str + start, len);
-	s[len] = '\0';
-	return s;
-}
-
-int end_word(char *str)
-{
-	int i = 0;
-	while (str[i] != '\0')
-	{
-		if ((str[i] != ' ' && str[i + 1] == ' ') || (str[i] != ' ' && str[i + 1] == '\0'))
-			return i + 1;
-		i++;
-	}
-	return 0;
-}
-
-char **ft_split(char *str)
-{
-	int i = 0;
-	int nbr = nbr_word(str);
-	char **tab = (char **)malloc(sizeof(char *) * (nbr + 1));
-	if (!tab)
-		return NULL;
-	
-	int j = 0;
-	int k = 0;
-	while (str[i] != '\0')
-	{
-		while (str[i] == ' ')
-			i++;
-		if (str[i] != '\0')
+		while (i < argc - 1)
 		{
-			j = end_word(str + i);
-			tab[k] = ft_slice(str, i, j);
-			i = i + j;
-			k++;
+			if ((!a_toi(argv[i + 1], &flage) || a_toi(argv[i + 1], &flage))
+				&& flage == 1)
+				info.arr[i] = a_toi(argv[i + 1], &flage);
+			else
+				info.e = 1;
+			i++;
 		}
 	}
-	tab[k] = 0;
-	return (tab);
+	else
+		info.e = 1;
+	return (info);
 }

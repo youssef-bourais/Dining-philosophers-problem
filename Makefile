@@ -1,11 +1,11 @@
 
 NAME = philo
 
-SRCS = philo.c parsing.c utils.c
+SRCS = philo.c parsing.c utils.c actions.c end_simulation.c free_all.c
 
 CC = cc
 
-CFLAGS = -Wall -Werror -Wextra 
+CFLAGS = -Wall -Werror -Wextra
 
 OBJS = $(SRCS:.c=.o)
 
