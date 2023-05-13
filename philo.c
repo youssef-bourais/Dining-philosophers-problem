@@ -6,7 +6,7 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/17 12:43:52 by ybourais          #+#    #+#             */
-/*   Updated: 2023/05/13 16:15:12 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/05/13 17:11:30 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,7 +109,12 @@ int	main(int argc, char *argv[])
 	free(info.arr);
 	if (info.arr[0] == 0)
 		return (0);
-	if (info.e == 1 || !creat_phiolosofers(&arg))
+	if (info.e == 1)
+	{
+		ft_error();
+		return (1);
+	}
+	if (!creat_phiolosofers(&arg))
 	{
 		ft_error();
 		return (1);

@@ -6,7 +6,7 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/28 10:37:39 by ybourais          #+#    #+#             */
-/*   Updated: 2023/05/13 16:28:43 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/05/13 17:16:32 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ long	a_toi(char *str, int *handler)
 		res = res * 10 + str[i] - '0';
 		i++;
 	}
-	if (str[i] != '\0' || res >= INT_MAX)
+	if (str[i] != '\0' || res >= INT_MAX || ft_len(str) > 10)
 		*handler = 0;
 	return (res);
 }

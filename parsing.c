@@ -6,7 +6,7 @@
 /*   By: ybourais <ybourais@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/03/25 15:24:26 by ybourais          #+#    #+#             */
-/*   Updated: 2023/05/13 16:41:01 by ybourais         ###   ########.fr       */
+/*   Updated: 2023/05/13 17:09:21 by ybourais         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,8 +32,6 @@ t_info	fill_data(int argc, char **argv)
 	t_info	info;
 
 	info.arr = malloc(sizeof(int) * (argc - 1));
-	info.e = 0;
-	info.arr = 0;
 	i = 0;
 	flage = 0;
 	if (argc == 5 || argc == 6)
